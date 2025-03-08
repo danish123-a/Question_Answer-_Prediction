@@ -1,0 +1,1648 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "gpuType": "T4",
+      "authorship_tag": "ABX9TyPUnqyvQXC8asflI++ReHQn",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/danish123-a/Question_Answer-_Prediction/blob/main/Question_Answer\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 1,
+      "metadata": {
+        "id": "V5jR5NQi_XEl"
+      },
+      "outputs": [],
+      "source": [
+        "import pandas as pd"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "v=pd.read_csv(\"/content/100_Unique_QA_Dataset.csv\")"
+      ],
+      "metadata": {
+        "id": "VN8Rm5ZM_op0"
+      },
+      "execution_count": 278,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "v"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 424
+        },
+        "id": "qfIf_JOB_tau",
+        "outputId": "9251e01d-ea07-4f3d-d241-90c1859a59d6"
+      },
+      "execution_count": 279,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "                                             question        answer\n",
+              "0                      What is the capital of France?         Paris\n",
+              "1                     What is the capital of Germany?        Berlin\n",
+              "2                  Who wrote 'To Kill a Mockingbird'?    Harper-Lee\n",
+              "3     What is the largest planet in our solar system?       Jupiter\n",
+              "4      What is the boiling point of water in Celsius?           100\n",
+              "..                                                ...           ...\n",
+              "85                  Who directed the movie 'Titanic'?  JamesCameron\n",
+              "86  Which superhero is also known as the Dark Knight?        Batman\n",
+              "87                     What is the capital of Brazil?      Brasilia\n",
+              "88        Which fruit is known as the king of fruits?         Mango\n",
+              "89       Which country is known for the Eiffel Tower?        France\n",
+              "\n",
+              "[90 rows x 2 columns]"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-bea1c4dc-cb48-4f3e-bb83-98b653e84bc5\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>question</th>\n",
+              "      <th>answer</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>What is the capital of France?</td>\n",
+              "      <td>Paris</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>What is the capital of Germany?</td>\n",
+              "      <td>Berlin</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>Who wrote 'To Kill a Mockingbird'?</td>\n",
+              "      <td>Harper-Lee</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>What is the largest planet in our solar system?</td>\n",
+              "      <td>Jupiter</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>What is the boiling point of water in Celsius?</td>\n",
+              "      <td>100</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>...</th>\n",
+              "      <td>...</td>\n",
+              "      <td>...</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>85</th>\n",
+              "      <td>Who directed the movie 'Titanic'?</td>\n",
+              "      <td>JamesCameron</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>86</th>\n",
+              "      <td>Which superhero is also known as the Dark Knight?</td>\n",
+              "      <td>Batman</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>87</th>\n",
+              "      <td>What is the capital of Brazil?</td>\n",
+              "      <td>Brasilia</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>88</th>\n",
+              "      <td>Which fruit is known as the king of fruits?</td>\n",
+              "      <td>Mango</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>89</th>\n",
+              "      <td>Which country is known for the Eiffel Tower?</td>\n",
+              "      <td>France</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "<p>90 rows × 2 columns</p>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-bea1c4dc-cb48-4f3e-bb83-98b653e84bc5')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-bea1c4dc-cb48-4f3e-bb83-98b653e84bc5 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-bea1c4dc-cb48-4f3e-bb83-98b653e84bc5');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "<div id=\"df-4fcdc3c7-e7a3-4e1f-8fe0-a16e663b0439\">\n",
+              "  <button class=\"colab-df-quickchart\" onclick=\"quickchart('df-4fcdc3c7-e7a3-4e1f-8fe0-a16e663b0439')\"\n",
+              "            title=\"Suggest charts\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "<svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "     width=\"24px\">\n",
+              "    <g>\n",
+              "        <path d=\"M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z\"/>\n",
+              "    </g>\n",
+              "</svg>\n",
+              "  </button>\n",
+              "\n",
+              "<style>\n",
+              "  .colab-df-quickchart {\n",
+              "      --bg-color: #E8F0FE;\n",
+              "      --fill-color: #1967D2;\n",
+              "      --hover-bg-color: #E2EBFA;\n",
+              "      --hover-fill-color: #174EA6;\n",
+              "      --disabled-fill-color: #AAA;\n",
+              "      --disabled-bg-color: #DDD;\n",
+              "  }\n",
+              "\n",
+              "  [theme=dark] .colab-df-quickchart {\n",
+              "      --bg-color: #3B4455;\n",
+              "      --fill-color: #D2E3FC;\n",
+              "      --hover-bg-color: #434B5C;\n",
+              "      --hover-fill-color: #FFFFFF;\n",
+              "      --disabled-bg-color: #3B4455;\n",
+              "      --disabled-fill-color: #666;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart {\n",
+              "    background-color: var(--bg-color);\n",
+              "    border: none;\n",
+              "    border-radius: 50%;\n",
+              "    cursor: pointer;\n",
+              "    display: none;\n",
+              "    fill: var(--fill-color);\n",
+              "    height: 32px;\n",
+              "    padding: 0;\n",
+              "    width: 32px;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart:hover {\n",
+              "    background-color: var(--hover-bg-color);\n",
+              "    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "    fill: var(--button-hover-fill-color);\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-quickchart-complete:disabled,\n",
+              "  .colab-df-quickchart-complete:disabled:hover {\n",
+              "    background-color: var(--disabled-bg-color);\n",
+              "    fill: var(--disabled-fill-color);\n",
+              "    box-shadow: none;\n",
+              "  }\n",
+              "\n",
+              "  .colab-df-spinner {\n",
+              "    border: 2px solid var(--fill-color);\n",
+              "    border-color: transparent;\n",
+              "    border-bottom-color: var(--fill-color);\n",
+              "    animation:\n",
+              "      spin 1s steps(1) infinite;\n",
+              "  }\n",
+              "\n",
+              "  @keyframes spin {\n",
+              "    0% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "      border-left-color: var(--fill-color);\n",
+              "    }\n",
+              "    20% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    30% {\n",
+              "      border-color: transparent;\n",
+              "      border-left-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    40% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-top-color: var(--fill-color);\n",
+              "    }\n",
+              "    60% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "    }\n",
+              "    80% {\n",
+              "      border-color: transparent;\n",
+              "      border-right-color: var(--fill-color);\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "    90% {\n",
+              "      border-color: transparent;\n",
+              "      border-bottom-color: var(--fill-color);\n",
+              "    }\n",
+              "  }\n",
+              "</style>\n",
+              "\n",
+              "  <script>\n",
+              "    async function quickchart(key) {\n",
+              "      const quickchartButtonEl =\n",
+              "        document.querySelector('#' + key + ' button');\n",
+              "      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.\n",
+              "      quickchartButtonEl.classList.add('colab-df-spinner');\n",
+              "      try {\n",
+              "        const charts = await google.colab.kernel.invokeFunction(\n",
+              "            'suggestCharts', [key], {});\n",
+              "      } catch (error) {\n",
+              "        console.error('Error during call to suggestCharts:', error);\n",
+              "      }\n",
+              "      quickchartButtonEl.classList.remove('colab-df-spinner');\n",
+              "      quickchartButtonEl.classList.add('colab-df-quickchart-complete');\n",
+              "    }\n",
+              "    (() => {\n",
+              "      let quickchartButtonEl =\n",
+              "        document.querySelector('#df-4fcdc3c7-e7a3-4e1f-8fe0-a16e663b0439 button');\n",
+              "      quickchartButtonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "    })();\n",
+              "  </script>\n",
+              "</div>\n",
+              "\n",
+              "  <div id=\"id_b172d6bb-5e2f-4755-9d4c-b678b0208cb8\">\n",
+              "    <style>\n",
+              "      .colab-df-generate {\n",
+              "        background-color: #E8F0FE;\n",
+              "        border: none;\n",
+              "        border-radius: 50%;\n",
+              "        cursor: pointer;\n",
+              "        display: none;\n",
+              "        fill: #1967D2;\n",
+              "        height: 32px;\n",
+              "        padding: 0 0 0 0;\n",
+              "        width: 32px;\n",
+              "      }\n",
+              "\n",
+              "      .colab-df-generate:hover {\n",
+              "        background-color: #E2EBFA;\n",
+              "        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "        fill: #174EA6;\n",
+              "      }\n",
+              "\n",
+              "      [theme=dark] .colab-df-generate {\n",
+              "        background-color: #3B4455;\n",
+              "        fill: #D2E3FC;\n",
+              "      }\n",
+              "\n",
+              "      [theme=dark] .colab-df-generate:hover {\n",
+              "        background-color: #434B5C;\n",
+              "        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "        fill: #FFFFFF;\n",
+              "      }\n",
+              "    </style>\n",
+              "    <button class=\"colab-df-generate\" onclick=\"generateWithVariable('v')\"\n",
+              "            title=\"Generate code using this dataframe.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "    <script>\n",
+              "      (() => {\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#id_b172d6bb-5e2f-4755-9d4c-b678b0208cb8 button.colab-df-generate');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      buttonEl.onclick = () => {\n",
+              "        google.colab.notebook.generateWithVariable('v');\n",
+              "      }\n",
+              "      })();\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "v",
+              "summary": "{\n  \"name\": \"v\",\n  \"rows\": 90,\n  \"fields\": [\n    {\n      \"column\": \"question\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 90,\n        \"samples\": [\n          \"What is the currency of China?\",\n          \"What is the capital of Australia?\",\n          \"Who discovered electricity?\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"answer\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 85,\n        \"samples\": [\n          \"ChristopherColumbus\",\n          \"Paris\",\n          \"Christmas\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {},
+          "execution_count": 279
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Tokenize\n",
+        "def Tokenize(tex):\n",
+        "  tex=tex.lower()\n",
+        "  tex=tex.replace(\"?\",\"\")\n",
+        "  tex=tex.replace(\"'\",\"\")\n",
+        "  return tex.split()"
+      ],
+      "metadata": {
+        "id": "FEwxKIjw_t0N"
+      },
+      "execution_count": 280,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "Tokenize(\"What is the capital of France?\t\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "MINjIYzLA3J4",
+        "outputId": "a411d2f1-3335-4838-9824-7cf9ea7a4642"
+      },
+      "execution_count": 281,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "['what', 'is', 'the', 'capital', 'of', 'france']"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 281
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "vocabolury={\"unknown\":0}"
+      ],
+      "metadata": {
+        "id": "pIbXYiMHGLH6"
+      },
+      "execution_count": 282,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def vocab(row):\n",
+        "  #print( row[\"question\"],row[\"answer\"])\n",
+        "  tokenize_question=Tokenize(row[\"question\"])\n",
+        "  tokenize_answer=Tokenize(row[\"answer\"])\n",
+        "  #print(tokenize_question,end=\" \")\n",
+        "  #print(tokenize_answer)\n",
+        "  #add tokenize_question and tokenize_answer\n",
+        "  vocabolury_=tokenize_question+tokenize_answer\n",
+        "  print(vocabolury_)\n",
+        "  for word in vocabolury_:\n",
+        "    if word not in vocabolury:\n",
+        "      vocabolury[word]=len(vocabolury)\n",
+        "  #return vocabolury"
+      ],
+      "metadata": {
+        "id": "ETDGfpU5HfrX"
+      },
+      "execution_count": 283,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "v1=v.apply(vocab,axis=1)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "1KxS8AlZIOWF",
+        "outputId": "aa4d97b5-87fa-493d-e6e8-a6f243f4a64b"
+      },
+      "execution_count": 284,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "['what', 'is', 'the', 'capital', 'of', 'france', 'paris']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'germany', 'berlin']\n",
+            "['who', 'wrote', 'to', 'kill', 'a', 'mockingbird', 'harper-lee']\n",
+            "['what', 'is', 'the', 'largest', 'planet', 'in', 'our', 'solar', 'system', 'jupiter']\n",
+            "['what', 'is', 'the', 'boiling', 'point', 'of', 'water', 'in', 'celsius', '100']\n",
+            "['who', 'painted', 'the', 'mona', 'lisa', 'leonardo-da-vinci']\n",
+            "['what', 'is', 'the', 'square', 'root', 'of', '64', '8']\n",
+            "['what', 'is', 'the', 'chemical', 'symbol', 'for', 'gold', 'au']\n",
+            "['which', 'year', 'did', 'world', 'war', 'ii', 'end', '1945']\n",
+            "['what', 'is', 'the', 'longest', 'river', 'in', 'the', 'world', 'nile']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'japan', 'tokyo']\n",
+            "['who', 'developed', 'the', 'theory', 'of', 'relativity', 'albert-einstein']\n",
+            "['what', 'is', 'the', 'freezing', 'point', 'of', 'water', 'in', 'fahrenheit', '32']\n",
+            "['which', 'planet', 'is', 'known', 'as', 'the', 'red', 'planet', 'mars']\n",
+            "['who', 'is', 'the', 'author', 'of', '1984', 'george-orwell']\n",
+            "['what', 'is', 'the', 'currency', 'of', 'the', 'united', 'kingdom', 'pound']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'india', 'delhi']\n",
+            "['who', 'discovered', 'gravity', 'newton']\n",
+            "['how', 'many', 'continents', 'are', 'there', 'on', 'earth', '7']\n",
+            "['which', 'gas', 'do', 'plants', 'use', 'for', 'photosynthesis', 'co2']\n",
+            "['what', 'is', 'the', 'smallest', 'prime', 'number', '2']\n",
+            "['who', 'invented', 'the', 'telephone', 'alexander-graham-bell']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'australia', 'canberra']\n",
+            "['which', 'ocean', 'is', 'the', 'largest', 'pacific-ocean']\n",
+            "['what', 'is', 'the', 'speed', 'of', 'light', 'in', 'vacuum', '299,792,458m/s']\n",
+            "['which', 'language', 'is', 'spoken', 'in', 'brazil', 'portuguese']\n",
+            "['who', 'discovered', 'penicillin', 'alexander-fleming']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'canada', 'ottawa']\n",
+            "['what', 'is', 'the', 'largest', 'mammal', 'on', 'earth', 'whale']\n",
+            "['which', 'element', 'has', 'the', 'atomic', 'number', '1', 'hydrogen']\n",
+            "['what', 'is', 'the', 'tallest', 'mountain', 'in', 'the', 'world', 'everest']\n",
+            "['which', 'city', 'is', 'known', 'as', 'the', 'big', 'apple', 'newyork']\n",
+            "['how', 'many', 'planets', 'are', 'in', 'the', 'solar', 'system', '8']\n",
+            "['who', 'painted', 'starry', 'night', 'vangogh']\n",
+            "['what', 'is', 'the', 'chemical', 'formula', 'of', 'water', 'h2o']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'italy', 'rome']\n",
+            "['which', 'country', 'is', 'famous', 'for', 'sushi', 'japan']\n",
+            "['who', 'was', 'the', 'first', 'person', 'to', 'step', 'on', 'the', 'moon', 'armstrong']\n",
+            "['what', 'is', 'the', 'main', 'ingredient', 'in', 'guacamole', 'avocado']\n",
+            "['how', 'many', 'sides', 'does', 'a', 'hexagon', 'have', '6']\n",
+            "['what', 'is', 'the', 'currency', 'of', 'china', 'yuan']\n",
+            "['who', 'wrote', 'pride', 'and', 'prejudice', 'jane-austen']\n",
+            "['what', 'is', 'the', 'chemical', 'symbol', 'for', 'iron', 'fe']\n",
+            "['what', 'is', 'the', 'hardest', 'natural', 'substance', 'on', 'earth', 'diamond']\n",
+            "['which', 'continent', 'is', 'the', 'largest', 'by', 'area', 'asia']\n",
+            "['who', 'was', 'the', 'first', 'president', 'of', 'the', 'united', 'states', 'george-washington']\n",
+            "['which', 'bird', 'is', 'known', 'for', 'its', 'ability', 'to', 'mimic', 'sounds', 'parrot']\n",
+            "['what', 'is', 'the', 'longest-running', 'animated', 'tv', 'show', 'simpsons']\n",
+            "['what', 'is', 'the', 'smallest', 'country', 'in', 'the', 'world', 'vaticancity']\n",
+            "['which', 'planet', 'has', 'the', 'most', 'moons', 'saturn']\n",
+            "['who', 'wrote', 'romeo', 'and', 'juliet', 'shakespeare']\n",
+            "['what', 'is', 'the', 'main', 'gas', 'in', 'earths', 'atmosphere', 'nitrogen']\n",
+            "['how', 'many', 'bones', 'are', 'in', 'the', 'adult', 'human', 'body', '206']\n",
+            "['which', 'metal', 'is', 'a', 'liquid', 'at', 'room', 'temperature', 'mercury']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'russia', 'moscow']\n",
+            "['who', 'discovered', 'electricity', 'benjamin-franklin']\n",
+            "['which', 'is', 'the', 'second-largest', 'country', 'by', 'land', 'area', 'canada']\n",
+            "['what', 'is', 'the', 'color', 'of', 'a', 'ripe', 'banana', 'yellow']\n",
+            "['which', 'month', 'has', '28', 'days', 'in', 'a', 'common', 'year', 'february']\n",
+            "['what', 'is', 'the', 'study', 'of', 'living', 'organisms', 'called', 'biology']\n",
+            "['which', 'country', 'is', 'home', 'to', 'the', 'great', 'wall', 'china']\n",
+            "['what', 'do', 'bees', 'collect', 'from', 'flowers', 'nectar']\n",
+            "['what', 'is', 'the', 'opposite', 'of', 'day', 'night']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'south', 'korea', 'seoul']\n",
+            "['who', 'invented', 'the', 'light', 'bulb', 'edison']\n",
+            "['which', 'gas', 'do', 'humans', 'breathe', 'in', 'for', 'survival', 'oxygen']\n",
+            "['what', 'is', 'the', 'square', 'root', 'of', '144', '12']\n",
+            "['which', 'country', 'has', 'the', 'pyramids', 'of', 'giza', 'egypt']\n",
+            "['which', 'sea', 'creature', 'has', 'eight', 'arms', 'octopus']\n",
+            "['which', 'holiday', 'is', 'celebrated', 'on', 'december', '25', 'christmas']\n",
+            "['what', 'is', 'the', 'currency', 'of', 'japan', 'yen']\n",
+            "['how', 'many', 'legs', 'does', 'a', 'spider', 'have', '8']\n",
+            "['which', 'sport', 'uses', 'a', 'net,', 'ball,', 'and', 'hoop', 'basketball']\n",
+            "['which', 'country', 'is', 'famous', 'for', 'its', 'kangaroos', 'australia']\n",
+            "['who', 'was', 'the', 'first', 'female', 'prime', 'minister', 'of', 'the', 'uk', 'margaretthatcher']\n",
+            "['which', 'is', 'the', 'fastest', 'land', 'animal', 'cheetah']\n",
+            "['what', 'is', 'the', 'first', 'element', 'on', 'the', 'periodic', 'table', 'hydrogen']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'spain', 'madrid']\n",
+            "['which', 'planet', 'is', 'the', 'closest', 'to', 'the', 'sun', 'mercury']\n",
+            "['who', 'is', 'known', 'as', 'the', 'father', 'of', 'computers', 'charlesbabbage']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'mexico', 'mexicocity']\n",
+            "['how', 'many', 'colors', 'are', 'in', 'a', 'rainbow', '7']\n",
+            "['which', 'musical', 'instrument', 'has', 'black', 'and', 'white', 'keys', 'piano']\n",
+            "['who', 'discovered', 'the', 'americas', 'in', '1492', 'christophercolumbus']\n",
+            "['which', 'disney', 'character', 'has', 'a', 'long', 'nose', 'and', 'grows', 'it', 'when', 'lying', 'pinocchio']\n",
+            "['who', 'directed', 'the', 'movie', 'titanic', 'jamescameron']\n",
+            "['which', 'superhero', 'is', 'also', 'known', 'as', 'the', 'dark', 'knight', 'batman']\n",
+            "['what', 'is', 'the', 'capital', 'of', 'brazil', 'brasilia']\n",
+            "['which', 'fruit', 'is', 'known', 'as', 'the', 'king', 'of', 'fruits', 'mango']\n",
+            "['which', 'country', 'is', 'known', 'for', 'the', 'eiffel', 'tower', 'france']\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "vocabolury"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XN2ipkV8IcKV",
+        "outputId": "a5577a1a-2e4c-428f-a767-d30be8d2c023"
+      },
+      "execution_count": 285,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "{'unknown': 0,\n",
+              " 'what': 1,\n",
+              " 'is': 2,\n",
+              " 'the': 3,\n",
+              " 'capital': 4,\n",
+              " 'of': 5,\n",
+              " 'france': 6,\n",
+              " 'paris': 7,\n",
+              " 'germany': 8,\n",
+              " 'berlin': 9,\n",
+              " 'who': 10,\n",
+              " 'wrote': 11,\n",
+              " 'to': 12,\n",
+              " 'kill': 13,\n",
+              " 'a': 14,\n",
+              " 'mockingbird': 15,\n",
+              " 'harper-lee': 16,\n",
+              " 'largest': 17,\n",
+              " 'planet': 18,\n",
+              " 'in': 19,\n",
+              " 'our': 20,\n",
+              " 'solar': 21,\n",
+              " 'system': 22,\n",
+              " 'jupiter': 23,\n",
+              " 'boiling': 24,\n",
+              " 'point': 25,\n",
+              " 'water': 26,\n",
+              " 'celsius': 27,\n",
+              " '100': 28,\n",
+              " 'painted': 29,\n",
+              " 'mona': 30,\n",
+              " 'lisa': 31,\n",
+              " 'leonardo-da-vinci': 32,\n",
+              " 'square': 33,\n",
+              " 'root': 34,\n",
+              " '64': 35,\n",
+              " '8': 36,\n",
+              " 'chemical': 37,\n",
+              " 'symbol': 38,\n",
+              " 'for': 39,\n",
+              " 'gold': 40,\n",
+              " 'au': 41,\n",
+              " 'which': 42,\n",
+              " 'year': 43,\n",
+              " 'did': 44,\n",
+              " 'world': 45,\n",
+              " 'war': 46,\n",
+              " 'ii': 47,\n",
+              " 'end': 48,\n",
+              " '1945': 49,\n",
+              " 'longest': 50,\n",
+              " 'river': 51,\n",
+              " 'nile': 52,\n",
+              " 'japan': 53,\n",
+              " 'tokyo': 54,\n",
+              " 'developed': 55,\n",
+              " 'theory': 56,\n",
+              " 'relativity': 57,\n",
+              " 'albert-einstein': 58,\n",
+              " 'freezing': 59,\n",
+              " 'fahrenheit': 60,\n",
+              " '32': 61,\n",
+              " 'known': 62,\n",
+              " 'as': 63,\n",
+              " 'red': 64,\n",
+              " 'mars': 65,\n",
+              " 'author': 66,\n",
+              " '1984': 67,\n",
+              " 'george-orwell': 68,\n",
+              " 'currency': 69,\n",
+              " 'united': 70,\n",
+              " 'kingdom': 71,\n",
+              " 'pound': 72,\n",
+              " 'india': 73,\n",
+              " 'delhi': 74,\n",
+              " 'discovered': 75,\n",
+              " 'gravity': 76,\n",
+              " 'newton': 77,\n",
+              " 'how': 78,\n",
+              " 'many': 79,\n",
+              " 'continents': 80,\n",
+              " 'are': 81,\n",
+              " 'there': 82,\n",
+              " 'on': 83,\n",
+              " 'earth': 84,\n",
+              " '7': 85,\n",
+              " 'gas': 86,\n",
+              " 'do': 87,\n",
+              " 'plants': 88,\n",
+              " 'use': 89,\n",
+              " 'photosynthesis': 90,\n",
+              " 'co2': 91,\n",
+              " 'smallest': 92,\n",
+              " 'prime': 93,\n",
+              " 'number': 94,\n",
+              " '2': 95,\n",
+              " 'invented': 96,\n",
+              " 'telephone': 97,\n",
+              " 'alexander-graham-bell': 98,\n",
+              " 'australia': 99,\n",
+              " 'canberra': 100,\n",
+              " 'ocean': 101,\n",
+              " 'pacific-ocean': 102,\n",
+              " 'speed': 103,\n",
+              " 'light': 104,\n",
+              " 'vacuum': 105,\n",
+              " '299,792,458m/s': 106,\n",
+              " 'language': 107,\n",
+              " 'spoken': 108,\n",
+              " 'brazil': 109,\n",
+              " 'portuguese': 110,\n",
+              " 'penicillin': 111,\n",
+              " 'alexander-fleming': 112,\n",
+              " 'canada': 113,\n",
+              " 'ottawa': 114,\n",
+              " 'mammal': 115,\n",
+              " 'whale': 116,\n",
+              " 'element': 117,\n",
+              " 'has': 118,\n",
+              " 'atomic': 119,\n",
+              " '1': 120,\n",
+              " 'hydrogen': 121,\n",
+              " 'tallest': 122,\n",
+              " 'mountain': 123,\n",
+              " 'everest': 124,\n",
+              " 'city': 125,\n",
+              " 'big': 126,\n",
+              " 'apple': 127,\n",
+              " 'newyork': 128,\n",
+              " 'planets': 129,\n",
+              " 'starry': 130,\n",
+              " 'night': 131,\n",
+              " 'vangogh': 132,\n",
+              " 'formula': 133,\n",
+              " 'h2o': 134,\n",
+              " 'italy': 135,\n",
+              " 'rome': 136,\n",
+              " 'country': 137,\n",
+              " 'famous': 138,\n",
+              " 'sushi': 139,\n",
+              " 'was': 140,\n",
+              " 'first': 141,\n",
+              " 'person': 142,\n",
+              " 'step': 143,\n",
+              " 'moon': 144,\n",
+              " 'armstrong': 145,\n",
+              " 'main': 146,\n",
+              " 'ingredient': 147,\n",
+              " 'guacamole': 148,\n",
+              " 'avocado': 149,\n",
+              " 'sides': 150,\n",
+              " 'does': 151,\n",
+              " 'hexagon': 152,\n",
+              " 'have': 153,\n",
+              " '6': 154,\n",
+              " 'china': 155,\n",
+              " 'yuan': 156,\n",
+              " 'pride': 157,\n",
+              " 'and': 158,\n",
+              " 'prejudice': 159,\n",
+              " 'jane-austen': 160,\n",
+              " 'iron': 161,\n",
+              " 'fe': 162,\n",
+              " 'hardest': 163,\n",
+              " 'natural': 164,\n",
+              " 'substance': 165,\n",
+              " 'diamond': 166,\n",
+              " 'continent': 167,\n",
+              " 'by': 168,\n",
+              " 'area': 169,\n",
+              " 'asia': 170,\n",
+              " 'president': 171,\n",
+              " 'states': 172,\n",
+              " 'george-washington': 173,\n",
+              " 'bird': 174,\n",
+              " 'its': 175,\n",
+              " 'ability': 176,\n",
+              " 'mimic': 177,\n",
+              " 'sounds': 178,\n",
+              " 'parrot': 179,\n",
+              " 'longest-running': 180,\n",
+              " 'animated': 181,\n",
+              " 'tv': 182,\n",
+              " 'show': 183,\n",
+              " 'simpsons': 184,\n",
+              " 'vaticancity': 185,\n",
+              " 'most': 186,\n",
+              " 'moons': 187,\n",
+              " 'saturn': 188,\n",
+              " 'romeo': 189,\n",
+              " 'juliet': 190,\n",
+              " 'shakespeare': 191,\n",
+              " 'earths': 192,\n",
+              " 'atmosphere': 193,\n",
+              " 'nitrogen': 194,\n",
+              " 'bones': 195,\n",
+              " 'adult': 196,\n",
+              " 'human': 197,\n",
+              " 'body': 198,\n",
+              " '206': 199,\n",
+              " 'metal': 200,\n",
+              " 'liquid': 201,\n",
+              " 'at': 202,\n",
+              " 'room': 203,\n",
+              " 'temperature': 204,\n",
+              " 'mercury': 205,\n",
+              " 'russia': 206,\n",
+              " 'moscow': 207,\n",
+              " 'electricity': 208,\n",
+              " 'benjamin-franklin': 209,\n",
+              " 'second-largest': 210,\n",
+              " 'land': 211,\n",
+              " 'color': 212,\n",
+              " 'ripe': 213,\n",
+              " 'banana': 214,\n",
+              " 'yellow': 215,\n",
+              " 'month': 216,\n",
+              " '28': 217,\n",
+              " 'days': 218,\n",
+              " 'common': 219,\n",
+              " 'february': 220,\n",
+              " 'study': 221,\n",
+              " 'living': 222,\n",
+              " 'organisms': 223,\n",
+              " 'called': 224,\n",
+              " 'biology': 225,\n",
+              " 'home': 226,\n",
+              " 'great': 227,\n",
+              " 'wall': 228,\n",
+              " 'bees': 229,\n",
+              " 'collect': 230,\n",
+              " 'from': 231,\n",
+              " 'flowers': 232,\n",
+              " 'nectar': 233,\n",
+              " 'opposite': 234,\n",
+              " 'day': 235,\n",
+              " 'south': 236,\n",
+              " 'korea': 237,\n",
+              " 'seoul': 238,\n",
+              " 'bulb': 239,\n",
+              " 'edison': 240,\n",
+              " 'humans': 241,\n",
+              " 'breathe': 242,\n",
+              " 'survival': 243,\n",
+              " 'oxygen': 244,\n",
+              " '144': 245,\n",
+              " '12': 246,\n",
+              " 'pyramids': 247,\n",
+              " 'giza': 248,\n",
+              " 'egypt': 249,\n",
+              " 'sea': 250,\n",
+              " 'creature': 251,\n",
+              " 'eight': 252,\n",
+              " 'arms': 253,\n",
+              " 'octopus': 254,\n",
+              " 'holiday': 255,\n",
+              " 'celebrated': 256,\n",
+              " 'december': 257,\n",
+              " '25': 258,\n",
+              " 'christmas': 259,\n",
+              " 'yen': 260,\n",
+              " 'legs': 261,\n",
+              " 'spider': 262,\n",
+              " 'sport': 263,\n",
+              " 'uses': 264,\n",
+              " 'net,': 265,\n",
+              " 'ball,': 266,\n",
+              " 'hoop': 267,\n",
+              " 'basketball': 268,\n",
+              " 'kangaroos': 269,\n",
+              " 'female': 270,\n",
+              " 'minister': 271,\n",
+              " 'uk': 272,\n",
+              " 'margaretthatcher': 273,\n",
+              " 'fastest': 274,\n",
+              " 'animal': 275,\n",
+              " 'cheetah': 276,\n",
+              " 'periodic': 277,\n",
+              " 'table': 278,\n",
+              " 'spain': 279,\n",
+              " 'madrid': 280,\n",
+              " 'closest': 281,\n",
+              " 'sun': 282,\n",
+              " 'father': 283,\n",
+              " 'computers': 284,\n",
+              " 'charlesbabbage': 285,\n",
+              " 'mexico': 286,\n",
+              " 'mexicocity': 287,\n",
+              " 'colors': 288,\n",
+              " 'rainbow': 289,\n",
+              " 'musical': 290,\n",
+              " 'instrument': 291,\n",
+              " 'black': 292,\n",
+              " 'white': 293,\n",
+              " 'keys': 294,\n",
+              " 'piano': 295,\n",
+              " 'americas': 296,\n",
+              " '1492': 297,\n",
+              " 'christophercolumbus': 298,\n",
+              " 'disney': 299,\n",
+              " 'character': 300,\n",
+              " 'long': 301,\n",
+              " 'nose': 302,\n",
+              " 'grows': 303,\n",
+              " 'it': 304,\n",
+              " 'when': 305,\n",
+              " 'lying': 306,\n",
+              " 'pinocchio': 307,\n",
+              " 'directed': 308,\n",
+              " 'movie': 309,\n",
+              " 'titanic': 310,\n",
+              " 'jamescameron': 311,\n",
+              " 'superhero': 312,\n",
+              " 'also': 313,\n",
+              " 'dark': 314,\n",
+              " 'knight': 315,\n",
+              " 'batman': 316,\n",
+              " 'brasilia': 317,\n",
+              " 'fruit': 318,\n",
+              " 'king': 319,\n",
+              " 'fruits': 320,\n",
+              " 'mango': 321,\n",
+              " 'eiffel': 322,\n",
+              " 'tower': 323}"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 285
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#length\n",
+        "len(vocabolury)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "dNT-3lPtKqgb",
+        "outputId": "d8ec52f8-f310-409a-cbf8-823c679a1982"
+      },
+      "execution_count": 286,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "324"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 286
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#Convert to word into numbers indices\n",
+        "def text_indices(text,vocabolury):\n",
+        "  words=Tokenize(text)\n",
+        "  index=[]\n",
+        "  for word in words:\n",
+        "    if word in vocabolury:\n",
+        "      index.append(vocabolury[word])\n",
+        "    else:\n",
+        "      index.append(vocabolury[\"unknown\"])\n",
+        "  return index"
+      ],
+      "metadata": {
+        "id": "yhm89NI_K0_z"
+      },
+      "execution_count": 287,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "text_indices(\"What is the capital of France?\t\",vocabolury)"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "uk_UhEqwMnoG",
+        "outputId": "95c826de-503f-4d27-ad8d-bc1a8603692a"
+      },
+      "execution_count": 288,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "[1, 2, 3, 4, 5, 6]"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 288
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import torch as t"
+      ],
+      "metadata": {
+        "id": "qKZYIOo2M0a9"
+      },
+      "execution_count": 289,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from torch.utils.data import Dataset,DataLoader"
+      ],
+      "metadata": {
+        "id": "KOSaBbbUN1h_"
+      },
+      "execution_count": 290,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#DataLoader class\n",
+        "class Ques_Ans_Dataset(Dataset):\n",
+        "  def __init__(self,v,vocabolury):\n",
+        "    self.v=v\n",
+        "    self.vocabolury=vocabolury\n",
+        "  def __len__(self):\n",
+        "    return self.v.shape[0]\n",
+        "  def __getitem__(self,index):\n",
+        "    numerical_question=text_indices(self.v.iloc[index][\"question\"],self.vocabolury)\n",
+        "    nuerical_answer=text_indices(self.v.iloc[index][\"answer\"],self.vocabolury)\n",
+        "    return t.tensor(numerical_question),t.tensor(nuerical_answer)\n"
+      ],
+      "metadata": {
+        "id": "24CXd5O8N-0Q"
+      },
+      "execution_count": 291,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "Dataset=Ques_Ans_Dataset(v,vocabolury)"
+      ],
+      "metadata": {
+        "id": "1evbndE2RHo0"
+      },
+      "execution_count": 292,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "Dataset[10]"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "CjMyO6pKR8xA",
+        "outputId": "70517eea-6056-4d1d-e1ea-f52213f69d8b"
+      },
+      "execution_count": 293,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "(tensor([ 1,  2,  3,  4,  5, 53]), tensor([54]))"
+            ]
+          },
+          "metadata": {},
+          "execution_count": 293
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#we make a Object of DataLoader\n",
+        "Data_loader=DataLoader(Dataset,batch_size=1)"
+      ],
+      "metadata": {
+        "id": "EHTC7cciSJ4a"
+      },
+      "execution_count": 294,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for question,answer in Data_loader:\n",
+        "  print(question)\n",
+        "  print(answer)\n",
+        ""
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "RiCMkJtXTjZi",
+        "outputId": "bc2b9a95-051a-47e1-b19b-5c3e4633bacb"
+      },
+      "execution_count": 295,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "tensor([[1, 2, 3, 4, 5, 6]])\n",
+            "tensor([[7]])\n",
+            "tensor([[1, 2, 3, 4, 5, 8]])\n",
+            "tensor([[9]])\n",
+            "tensor([[10, 11, 12, 13, 14, 15]])\n",
+            "tensor([[16]])\n",
+            "tensor([[ 1,  2,  3, 17, 18, 19, 20, 21, 22]])\n",
+            "tensor([[23]])\n",
+            "tensor([[ 1,  2,  3, 24, 25,  5, 26, 19, 27]])\n",
+            "tensor([[28]])\n",
+            "tensor([[10, 29,  3, 30, 31]])\n",
+            "tensor([[32]])\n",
+            "tensor([[ 1,  2,  3, 33, 34,  5, 35]])\n",
+            "tensor([[36]])\n",
+            "tensor([[ 1,  2,  3, 37, 38, 39, 40]])\n",
+            "tensor([[41]])\n",
+            "tensor([[42, 43, 44, 45, 46, 47, 48]])\n",
+            "tensor([[49]])\n",
+            "tensor([[ 1,  2,  3, 50, 51, 19,  3, 45]])\n",
+            "tensor([[52]])\n",
+            "tensor([[ 1,  2,  3,  4,  5, 53]])\n",
+            "tensor([[54]])\n",
+            "tensor([[10, 55,  3, 56,  5, 57]])\n",
+            "tensor([[58]])\n",
+            "tensor([[ 1,  2,  3, 59, 25,  5, 26, 19, 60]])\n",
+            "tensor([[61]])\n",
+            "tensor([[42, 18,  2, 62, 63,  3, 64, 18]])\n",
+            "tensor([[65]])\n",
+            "tensor([[10,  2,  3, 66,  5, 67]])\n",
+            "tensor([[68]])\n",
+            "tensor([[ 1,  2,  3, 69,  5,  3, 70, 71]])\n",
+            "tensor([[72]])\n",
+            "tensor([[ 1,  2,  3,  4,  5, 73]])\n",
+            "tensor([[74]])\n",
+            "tensor([[10, 75, 76]])\n",
+            "tensor([[77]])\n",
+            "tensor([[78, 79, 80, 81, 82, 83, 84]])\n",
+            "tensor([[85]])\n",
+            "tensor([[42, 86, 87, 88, 89, 39, 90]])\n",
+            "tensor([[91]])\n",
+            "tensor([[ 1,  2,  3, 92, 93, 94]])\n",
+            "tensor([[95]])\n",
+            "tensor([[10, 96,  3, 97]])\n",
+            "tensor([[98]])\n",
+            "tensor([[ 1,  2,  3,  4,  5, 99]])\n",
+            "tensor([[100]])\n",
+            "tensor([[ 42, 101,   2,   3,  17]])\n",
+            "tensor([[102]])\n",
+            "tensor([[  1,   2,   3, 103,   5, 104,  19, 105]])\n",
+            "tensor([[106]])\n",
+            "tensor([[ 42, 107,   2, 108,  19, 109]])\n",
+            "tensor([[110]])\n",
+            "tensor([[ 10,  75, 111]])\n",
+            "tensor([[112]])\n",
+            "tensor([[  1,   2,   3,   4,   5, 113]])\n",
+            "tensor([[114]])\n",
+            "tensor([[  1,   2,   3,  17, 115,  83,  84]])\n",
+            "tensor([[116]])\n",
+            "tensor([[ 42, 117, 118,   3, 119,  94, 120]])\n",
+            "tensor([[121]])\n",
+            "tensor([[  1,   2,   3, 122, 123,  19,   3,  45]])\n",
+            "tensor([[124]])\n",
+            "tensor([[ 42, 125,   2,  62,  63,   3, 126, 127]])\n",
+            "tensor([[128]])\n",
+            "tensor([[ 78,  79, 129,  81,  19,   3,  21,  22]])\n",
+            "tensor([[36]])\n",
+            "tensor([[ 10,  29, 130, 131]])\n",
+            "tensor([[132]])\n",
+            "tensor([[  1,   2,   3,  37, 133,   5,  26]])\n",
+            "tensor([[134]])\n",
+            "tensor([[  1,   2,   3,   4,   5, 135]])\n",
+            "tensor([[136]])\n",
+            "tensor([[ 42, 137,   2, 138,  39, 139]])\n",
+            "tensor([[53]])\n",
+            "tensor([[ 10, 140,   3, 141, 142,  12, 143,  83,   3, 144]])\n",
+            "tensor([[145]])\n",
+            "tensor([[  1,   2,   3, 146, 147,  19, 148]])\n",
+            "tensor([[149]])\n",
+            "tensor([[ 78,  79, 150, 151,  14, 152, 153]])\n",
+            "tensor([[154]])\n",
+            "tensor([[  1,   2,   3,  69,   5, 155]])\n",
+            "tensor([[156]])\n",
+            "tensor([[ 10,  11, 157, 158, 159]])\n",
+            "tensor([[160]])\n",
+            "tensor([[  1,   2,   3,  37,  38,  39, 161]])\n",
+            "tensor([[162]])\n",
+            "tensor([[  1,   2,   3, 163, 164, 165,  83,  84]])\n",
+            "tensor([[166]])\n",
+            "tensor([[ 42, 167,   2,   3,  17, 168, 169]])\n",
+            "tensor([[170]])\n",
+            "tensor([[ 10, 140,   3, 141, 171,   5,   3,  70, 172]])\n",
+            "tensor([[173]])\n",
+            "tensor([[ 42, 174,   2,  62,  39, 175, 176,  12, 177, 178]])\n",
+            "tensor([[179]])\n",
+            "tensor([[  1,   2,   3, 180, 181, 182, 183]])\n",
+            "tensor([[184]])\n",
+            "tensor([[  1,   2,   3,  92, 137,  19,   3,  45]])\n",
+            "tensor([[185]])\n",
+            "tensor([[ 42,  18, 118,   3, 186, 187]])\n",
+            "tensor([[188]])\n",
+            "tensor([[ 10,  11, 189, 158, 190]])\n",
+            "tensor([[191]])\n",
+            "tensor([[  1,   2,   3, 146,  86,  19, 192, 193]])\n",
+            "tensor([[194]])\n",
+            "tensor([[ 78,  79, 195,  81,  19,   3, 196, 197, 198]])\n",
+            "tensor([[199]])\n",
+            "tensor([[ 42, 200,   2,  14, 201, 202, 203, 204]])\n",
+            "tensor([[205]])\n",
+            "tensor([[  1,   2,   3,   4,   5, 206]])\n",
+            "tensor([[207]])\n",
+            "tensor([[ 10,  75, 208]])\n",
+            "tensor([[209]])\n",
+            "tensor([[ 42,   2,   3, 210, 137, 168, 211, 169]])\n",
+            "tensor([[113]])\n",
+            "tensor([[  1,   2,   3, 212,   5,  14, 213, 214]])\n",
+            "tensor([[215]])\n",
+            "tensor([[ 42, 216, 118, 217, 218,  19,  14, 219,  43]])\n",
+            "tensor([[220]])\n",
+            "tensor([[  1,   2,   3, 221,   5, 222, 223, 224]])\n",
+            "tensor([[225]])\n",
+            "tensor([[ 42, 137,   2, 226,  12,   3, 227, 228]])\n",
+            "tensor([[155]])\n",
+            "tensor([[  1,  87, 229, 230, 231, 232]])\n",
+            "tensor([[233]])\n",
+            "tensor([[  1,   2,   3, 234,   5, 235]])\n",
+            "tensor([[131]])\n",
+            "tensor([[  1,   2,   3,   4,   5, 236, 237]])\n",
+            "tensor([[238]])\n",
+            "tensor([[ 10,  96,   3, 104, 239]])\n",
+            "tensor([[240]])\n",
+            "tensor([[ 42,  86,  87, 241, 242,  19,  39, 243]])\n",
+            "tensor([[244]])\n",
+            "tensor([[  1,   2,   3,  33,  34,   5, 245]])\n",
+            "tensor([[246]])\n",
+            "tensor([[ 42, 137, 118,   3, 247,   5, 248]])\n",
+            "tensor([[249]])\n",
+            "tensor([[ 42, 250, 251, 118, 252, 253]])\n",
+            "tensor([[254]])\n",
+            "tensor([[ 42, 255,   2, 256,  83, 257, 258]])\n",
+            "tensor([[259]])\n",
+            "tensor([[ 1,  2,  3, 69,  5, 53]])\n",
+            "tensor([[260]])\n",
+            "tensor([[ 78,  79, 261, 151,  14, 262, 153]])\n",
+            "tensor([[36]])\n",
+            "tensor([[ 42, 263, 264,  14, 265, 266, 158, 267]])\n",
+            "tensor([[268]])\n",
+            "tensor([[ 42, 137,   2, 138,  39, 175, 269]])\n",
+            "tensor([[99]])\n",
+            "tensor([[ 10, 140,   3, 141, 270,  93, 271,   5,   3, 272]])\n",
+            "tensor([[273]])\n",
+            "tensor([[ 42,   2,   3, 274, 211, 275]])\n",
+            "tensor([[276]])\n",
+            "tensor([[  1,   2,   3, 141, 117,  83,   3, 277, 278]])\n",
+            "tensor([[121]])\n",
+            "tensor([[  1,   2,   3,   4,   5, 279]])\n",
+            "tensor([[280]])\n",
+            "tensor([[ 42,  18,   2,   3, 281,  12,   3, 282]])\n",
+            "tensor([[205]])\n",
+            "tensor([[ 10,   2,  62,  63,   3, 283,   5, 284]])\n",
+            "tensor([[285]])\n",
+            "tensor([[  1,   2,   3,   4,   5, 286]])\n",
+            "tensor([[287]])\n",
+            "tensor([[ 78,  79, 288,  81,  19,  14, 289]])\n",
+            "tensor([[85]])\n",
+            "tensor([[ 42, 290, 291, 118, 292, 158, 293, 294]])\n",
+            "tensor([[295]])\n",
+            "tensor([[ 10,  75,   3, 296,  19, 297]])\n",
+            "tensor([[298]])\n",
+            "tensor([[ 42, 299, 300, 118,  14, 301, 302, 158, 303, 304, 305, 306]])\n",
+            "tensor([[307]])\n",
+            "tensor([[ 10, 308,   3, 309, 310]])\n",
+            "tensor([[311]])\n",
+            "tensor([[ 42, 312,   2, 313,  62,  63,   3, 314, 315]])\n",
+            "tensor([[316]])\n",
+            "tensor([[  1,   2,   3,   4,   5, 109]])\n",
+            "tensor([[317]])\n",
+            "tensor([[ 42, 318,   2,  62,  63,   3, 319,   5, 320]])\n",
+            "tensor([[321]])\n",
+            "tensor([[ 42, 137,   2,  62,  39,   3, 322, 323]])\n",
+            "tensor([[6]])\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import torch.nn as nn"
+      ],
+      "metadata": {
+        "id": "PblPFWYQYENs"
+      },
+      "execution_count": 296,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "class  Simple_RNA(nn.Module):\n",
+        "  def __init__(self,vocabolury_size):\n",
+        "    super().__init__()\n",
+        "    self.embedding=nn.Embedding(vocabolury_size,embedding_dim=50)\n",
+        "    self.rna=nn.RNN(input_size=50,hidden_size=64,batch_first=True)\n",
+        "    self.fully_connected_layer=nn.Linear(64,vocabolury_size)\n",
+        "  def forward(self,question):\n",
+        "    embedded_question=self.embedding(question)\n",
+        "    hidden,final=self.rna(embedded_question)\n",
+        "    uotput=self.fully_connected_layer(final.squeeze(0))\n",
+        "    return uotput"
+      ],
+      "metadata": {
+        "id": "oMxMBKrjTuhW"
+      },
+      "execution_count": 297,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "learning_rate=0.001"
+      ],
+      "metadata": {
+        "id": "jQIE2WkHbxS8"
+      },
+      "execution_count": 298,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "epochs=10"
+      ],
+      "metadata": {
+        "id": "nUC_5XGucIdE"
+      },
+      "execution_count": 299,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model=Simple_RNA(len(vocabolury))"
+      ],
+      "metadata": {
+        "id": "1ncln3U8cLfY"
+      },
+      "execution_count": 300,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#loss_object\n",
+        "loss1=nn.CrossEntropyLoss()"
+      ],
+      "metadata": {
+        "id": "T86PcRuYcOxo"
+      },
+      "execution_count": 301,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#optimizer\n",
+        "optimizer=t.optim.Adam(model.parameters(),lr=learning_rate)"
+      ],
+      "metadata": {
+        "id": "GHzs4aXqcYeE"
+      },
+      "execution_count": 302,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#now we will start training pipeline\n",
+        "for epoch in range(epochs):\n",
+        "  total_loss=0\n",
+        "  for question,answer in Data_loader:\n",
+        "    #forwardpass\n",
+        "    y_pred=model(question)\n",
+        "    #loss\n",
+        "    loss=loss1(y_pred,answer[0])\n",
+        "    optimizer.zero_grad()\n",
+        "    #gradient\n",
+        "    loss.backward()\n",
+        "    #update weight & bias\n",
+        "    optimizer.step()\n",
+        "    total_loss+=loss.item()\n",
+        "  print(f'(epoch):{epoch+1}/{epochs},loss:{total_loss:4f}')"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "qtcxDLBycnrz",
+        "outputId": "116d7da9-6df5-4fcc-9ca1-6d08e52dfe8f"
+      },
+      "execution_count": 303,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "(epoch):1/10,loss:527.104364\n",
+            "(epoch):2/10,loss:447.304686\n",
+            "(epoch):3/10,loss:366.506835\n",
+            "(epoch):4/10,loss:310.648429\n",
+            "(epoch):5/10,loss:260.151524\n",
+            "(epoch):6/10,loss:212.559858\n",
+            "(epoch):7/10,loss:169.374186\n",
+            "(epoch):8/10,loss:132.196328\n",
+            "(epoch):9/10,loss:101.875490\n",
+            "(epoch):10/10,loss:78.364203\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "def predict(model,question,thersold=0.5):\n",
+        "  #convert question to number\n",
+        "  numerical_question=text_indices(question,vocabolury)\n",
+        "  #in tensor\n",
+        "  tensor_question=t.tensor(numerical_question).unsqueeze(0)\n",
+        "  #send_to_model\n",
+        "  output=model(tensor_question)\n",
+        "  #convert_logits_to_probability\n",
+        "  prob=t.nn.functional.softmax(output)\n",
+        "  #find the index of max probability\n",
+        "  value,index=t.max(prob,dim=1)\n",
+        "  print(value,index)\n",
+        "  if value<thersold:\n",
+        "    print(\"I don't know\")\n",
+        "  print(list(vocabolury.keys())[index])\n",
+        "  #return list(vocabolury.keys())[index]\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "M_uvQF3uizA1"
+      },
+      "execution_count": 314,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "for i in range(10):\n",
+        "  question=(v.iloc[i][\"question\"])\n",
+        "  #print(question)\n",
+        "  predict_answer = predict(model, question)"
+      ],
+      "metadata": {
+        "id": "tqIi1GLyrEmT",
+        "outputId": "63951971-ebd2-42ca-995b-dd3c2d0631da",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 315,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "tensor([0.3788], grad_fn=<MaxBackward0>) tensor([7])\n",
+            "I don't know\n",
+            "paris\n",
+            "tensor([0.3485], grad_fn=<MaxBackward0>) tensor([9])\n",
+            "I don't know\n",
+            "berlin\n",
+            "tensor([0.5481], grad_fn=<MaxBackward0>) tensor([16])\n",
+            "harper-lee\n",
+            "tensor([0.5657], grad_fn=<MaxBackward0>) tensor([23])\n",
+            "jupiter\n",
+            "tensor([0.5150], grad_fn=<MaxBackward0>) tensor([28])\n",
+            "100\n",
+            "tensor([0.4924], grad_fn=<MaxBackward0>) tensor([32])\n",
+            "I don't know\n",
+            "leonardo-da-vinci\n",
+            "tensor([0.6353], grad_fn=<MaxBackward0>) tensor([36])\n",
+            "8\n",
+            "tensor([0.5571], grad_fn=<MaxBackward0>) tensor([41])\n",
+            "au\n",
+            "tensor([0.7670], grad_fn=<MaxBackward0>) tensor([49])\n",
+            "1945\n",
+            "tensor([0.2274], grad_fn=<MaxBackward0>) tensor([124])\n",
+            "I don't know\n",
+            "everest\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "<ipython-input-314-5082c15516fb>:9: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.\n",
+            "  prob=t.nn.functional.softmax(output)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "predict(model,\"what is  capital of india\")"
+      ],
+      "metadata": {
+        "id": "eqA9bhJJwW58",
+        "outputId": "43b2c03c-5837-4908-881c-2f3fb3c699a4",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 318,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "tensor([0.3633], grad_fn=<MaxBackward0>) tensor([74])\n",
+            "I don't know\n",
+            "delhi\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "<ipython-input-314-5082c15516fb>:9: UserWarning: Implicit dimension choice for softmax has been deprecated. Change the call to include dim=X as an argument.\n",
+            "  prob=t.nn.functional.softmax(output)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "#check....given answer  in [] like [41],[32]..etc\n",
+        "list(vocabolury.keys())[74]"
+      ],
+      "metadata": {
+        "id": "ezIa9nwdngFk",
+        "outputId": "f614a7a6-06d5-40aa-e073-07133c418c2f",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 35
+        }
+      },
+      "execution_count": 319,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "'delhi'"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "string"
+            }
+          },
+          "metadata": {},
+          "execution_count": 319
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "YJOr3kRYoEII"
+      },
+      "execution_count": 316,
+      "outputs": []
+    }
+  ]
+}
